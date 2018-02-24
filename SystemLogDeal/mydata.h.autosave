@@ -1,0 +1,38 @@
+﻿#ifndef MYDATA_H
+#define MYDATA_H
+
+#include <QString>
+
+
+class MyData{
+public:
+    MyData(QString id);
+    setID(QString id);
+
+    addName(QString name);
+    addDetails(QString detail);
+    
+private:
+    QString id;
+    QList<QString> names;
+    QList<QString> details;
+};
+
+
+
+class MyEvent{
+public:
+    setEventData(MyData *event);
+    setSystemData(MyData *system_data);
+    setTime(QString time);
+    setRecordID(QString id);
+    
+private:
+  QString time;
+  QString record_id;
+  
+  MyData *event_data;
+  MyData  *system_data;
+};
+
+#endif // MYDATA_H

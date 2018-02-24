@@ -1,0 +1,10 @@
+﻿#ifndef MYFUNCTIONS_H
+#define MYFUNCTIONS_H
+
+#include "data.h"
+#include "mygraph.h"
+
+
+
+
+#endif // MYFUNCTIONS_H
