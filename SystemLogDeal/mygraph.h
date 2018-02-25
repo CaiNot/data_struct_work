@@ -29,6 +29,7 @@ public:
 
     addEdge(MyEdge *edge);// finished
     addEvent(MyEvent *event);// finished
+    int deleteEdge(MyVex *vex);
 
     QString getLevels();
 
@@ -45,6 +46,7 @@ public:
 
     MyVex *getVex(QString target); // finished
     MyVex *getVexTime(QString time); // finished
+    int deleteVex(MyVex *vex);
     int compareTime(MyVex *vex_1,MyVex *vex_2);
     addVex(MyVex *vex); // finished
     QString getTarget(MyVex *vex); // finished

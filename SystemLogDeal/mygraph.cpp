@@ -34,6 +34,17 @@ MyVex *MyGraph::getVexTime(QString time)
     return NULL;
 }
 
+int MyGraph::deleteVex(MyVex *vex)
+{
+    int length=this->vexList->length();
+    MyVex *vex_temp=NULL;
+    for(int i=0;i<length;i++){
+        vex_temp=this->vexList->at(i);
+        vex_temp->deleteEdge(vex);
+    }
+    return 0;
+}
+
 int MyGraph::compareTime(MyVex *vex_1, MyVex *vex_2)
 {
     int vex_1_time=vex_1->time.toInt();
@@ -103,6 +114,27 @@ MyVex::addEdge(MyEdge *edge)
 MyVex::addEvent(MyEvent *data)
 {
     this->eventList->append(data);
+}
+
+int MyVex::deleteEdge(MyVex *vex)
+{
+    MyEdge *edge_temp=this->firstEdge,*edge=this->firstEdge;
+    if(vex==edge->vex){
+        this->firstEdge=edge->adjlink;
+        free(edge);
+        return 0;
+    }
+    while (edge_temp!=NULL) {
+        edge=edge_temp->adjlink;
+        if(edge&&edge->vex==vex){
+            edge_temp->adjlink=edge->adjlink;
+            free(edge);
+            return 0;
+        }
+        edge_temp=edge;
+    }
+
+    return 1;
 }
 
 QString MyVex::getLevels()

@@ -48,7 +48,6 @@ Dialog::showData(MyEvent *event)
         }
         this->ui->textBrowser->insertPlainText("\n");
     }
-
 }
 
 Dialog::~Dialog()

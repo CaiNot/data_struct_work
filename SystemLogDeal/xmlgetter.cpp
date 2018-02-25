@@ -98,19 +98,20 @@ int XMLGetter::createEvent(QDomElement *element)
                                 this->event->setRecordID(e_2.attribute("Name"));
                                 this->data->addDetails(e_2.attribute("Name"));
                             }
-                            else{
-                            this->details=e_2.text();
-                            //                            qDebug()<<" "<<e_2.tagName()<<e_2.text();
-                            QDomNamedNodeMap map= e_2.attributes();// 获取元素的属性
-                                for(int i=0;i<map.length();i++){
-                                    this->details+=map.item(i).nodeValue();
-                                    //                                break; // only run once
-                                }
+                            else if(i==1&&e_2.tagName()=="TimeCreated"){
+                                this->data->addDetails(e_2.attribute("SystemTime"));
+                            }
+                            else   {
+                                this->details=e_2.text();
+                                //                            QDomNamedNodeMap map= e_2.attributes();// 获取元素的属性
+                                //                                for(int i=0;i<map.length();i++){
+                                //                                    this->details+=map.item(i).nodeValue();
+                                //                                }
                                 this->data->addDetails(this->details);
                             }
                             e_2=e_2.nextSiblingElement();
                         }while(!e_2.isNull());
-                        //                        qDebug()<<"\n";
+
 
                         e_1=e_1.nextSiblingElement();
                     }while(!e_1.isNull());
@@ -143,6 +144,79 @@ int XMLGetter::createEvent(QDomElement *element)
         }
     }
     return 0;
+}
+
+int XMLGetter::writeXML(QString PATH,MyGraph *graph)
+{
+    PATH="d://what.xml";
+    QFile file(PATH);
+
+    file.open(QIODevice::ReadWrite);
+    QDomDocument doc;
+
+    QString header_str="version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"";
+    doc.appendChild(doc.createProcessingInstruction("xml",header_str));
+
+    QDomElement root=doc.createElement("Events");
+
+    int vex_length=graph->vexList->length();
+    int event_length=0;
+    this->vex_list=graph->vexList;
+    for (int i=0;i<vex_length;i++){
+        this->event_list=this->vex_list->at(i)->eventList;
+        event_length=this->event_list->length();
+        for(int i=0;i<event_length;i++){
+            this->event=this->event_list->at(i);
+
+            this->system_data=this->event->system_data;
+            this->event_data=this->event->event_data;
+            this->render_data=this->event->render_data;
+
+            doc.appendChild(root);
+            QDomElement item_event=doc.createElement("Event");
+            QDomElement item_system=doc.createElement("System");
+            QDomElement item_event_data=doc.createElement("EventData");
+            QDomElement item_render=doc.createElement("RenderingInfo");
+
+            QDomElement item_father;
+            for(int x=0;x<3;x++){
+                if(x==0){
+                    item_father=item_system;
+                    this->data=this->system_data;
+                }else if(x==1){
+                    item_father=item_event_data;
+                    this->data=this->event_data;
+                }else if(x==2){
+                    item_father=item_render;
+                    this->data=this->render_data;
+                }
+                int name_length=this->data->names->length();
+
+                for(int i=0;i<name_length;i++){
+                    this->name=this->data->names->at(i);
+                    QDomElement item=doc.createElement(this->name);
+                    if(x==0&&this->name=="Provider"){
+                        item.setAttribute("Name",this->data->details->at(i));
+                    }else if(x==0&&this->name=="TimeCreated"){
+                        item.setAttribute("SystemTime",this->data->details->at(i));
+                    }else
+                    {QDomText text=doc.createTextNode(this->data->details->at(i));
+                    item.appendChild(text);
+                    }
+                    item_father.appendChild(item);
+                }
+                item_event.appendChild(item_father);
+            }
+            root.appendChild(item_event);
+
+        }
+    }
+
+    QTextStream out(&file);
+    doc.save(out,4);
+    file.close();
+
+
 }
 
 
