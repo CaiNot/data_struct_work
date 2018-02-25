@@ -104,3 +104,36 @@ MyVex::addEvent(MyEvent *data)
 {
     this->eventList->append(data);
 }
+
+QString MyVex::getLevels()
+{
+    QString levels;
+    QList<QString> levels_list;
+    QMap<QString,int> levels_map;
+
+    int length_events=0;
+    length_events=this->eventList->length();
+    MyEvent *e=NULL;
+    for(int i =0;i<length_events;i++){
+        e=this->eventList->at(i);
+//        if(i==0){
+//            levels=e->render_data->getDetailByNameString("Level");
+//        }else
+//            levels+=","+e->render_data->getDetailByNameString("Level");
+
+        levels=e->render_data->getDetailByNameString("Level");
+        if(levels_map.contains(levels)){
+            levels_map.insert(levels,levels_map.value(levels)+1);
+        }else{
+            levels_map.insert(levels,1);
+        }
+    }
+    levels_list=levels_map.keys();
+    int length=levels_list.length();
+    levels="";
+    for(int i=0;i<length;i++){
+        levels+=levels_list.at(i)+" "+QString::number(levels_map.value(levels_list.at(i)))+"\t";
+    }
+
+    return levels;
+}

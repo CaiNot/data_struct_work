@@ -28,12 +28,15 @@ SOURCES += main.cpp\
     xmlgetter.cpp \
     data.cpp \
     mygraph.cpp \
-    myclass.cpp
+    myclass.cpp \
+    dialog.cpp
 
 HEADERS  += mainwindow.h \
     xmlgetter.h \
     mygraph.h \
     data.h \
-    myclass.h
+    myclass.h \
+    dialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    dialog.ui

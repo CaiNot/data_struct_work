@@ -30,12 +30,13 @@ public:
     addEdge(MyEdge *edge);// finished
     addEvent(MyEvent *event);// finished
 
+    QString getLevels();
+
     QList<MyEvent *> *eventList;
     QString provider;
     QString time;
     MyEdge *firstEdge;
 };
-
 
 
 class MyGraph{

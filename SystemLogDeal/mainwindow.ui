@@ -6,29 +6,161 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>772</width>
-    <height>526</height>
+    <width>763</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout_2" rowstretch="10,0,0">
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,3,0,1,0">
+        <item>
+         <widget class="QPushButton" name="delBtn">
+          <property name="font">
+           <font>
+            <family>Cambria</family>
+           </font>
+          </property>
+          <property name="text">
+           <string>DELETE</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="openBtn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <family>Cambria</family>
+           </font>
+          </property>
+          <property name="text">
+           <string>OPEN</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="insertBtn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <family>Cambria</family>
+           </font>
+          </property>
+          <property name="text">
+           <string>INSERT</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="backBtn">
+          <property name="font">
+           <font>
+            <family>Cambria</family>
+           </font>
+          </property>
+          <property name="text">
+           <string>BACK</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="font">
+         <font>
+          <family>Cambria</family>
+         </font>
+        </property>
+        <column>
+         <property name="text">
+          <string>Provider</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Nums</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Levels</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>772</width>
-     <height>25</height>
+     <width>763</width>
+     <height>26</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menuSearch">
+    <property name="font">
+     <font>
+      <family>Cambria</family>
+     </font>
+    </property>
     <property name="title">
-     <string>选项</string>
+     <string>SEARCH</string>
     </property>
    </widget>
-   <addaction name="menu"/>
+   <widget class="QMenu" name="menuHelp">
+    <property name="font">
+     <font>
+      <family>Cambria</family>
+     </font>
+    </property>
+    <property name="title">
+     <string>HELP</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuFILE">
+    <property name="title">
+     <string>FILE</string>
+    </property>
+    <addaction name="actionsave"/>
+    <addaction name="actionopen"/>
+   </widget>
+   <addaction name="menuFILE"/>
+   <addaction name="menuSearch"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -39,6 +171,21 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionSearch">
+   <property name="text">
+    <string>Search</string>
+   </property>
+  </action>
+  <action name="actionsave">
+   <property name="text">
+    <string>save</string>
+   </property>
+  </action>
+  <action name="actionopen">
+   <property name="text">
+    <string>open</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

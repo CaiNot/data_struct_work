@@ -78,33 +78,39 @@ int XMLGetter::createEvent(QDomElement *element)
                         i++;
                         if(i==1)
                         {
-                            this->system_data=new MyData();
+                            this->system_data=new MyData("System");
                             this->data=this->system_data;
                         }
                         else if(i==2)
                         {
-                            this->event_data=new MyData();
+                            this->event_data=new MyData("EventData");
                             this->data=this->event_data;
                         }
                         else {
-                            this->render_data=new MyData();
+                            this->render_data=new MyData("RenderingInfo");
                             this->data=this->render_data;
                         }
 
                         QDomElement e_2=e_1.firstChildElement();
                         do{
                             this->data->addName(e_2.tagName());
-                            this->details=e_2.text();
-//                            qDebug()<<" "<<e_2.tagName()<<e_2.text();
-                            QDomNamedNodeMap map= e_2.attributes();// 获取元素的属性
-                            for(int i=0;i<map.length();i++){
-                                this->details+=map.item(i).nodeValue();
-                                break; // only run once
+                            if(i==1&&e_2.tagName()=="Provider"){
+                                this->event->setRecordID(e_2.attribute("Name"));
+                                this->data->addDetails(e_2.attribute("Name"));
                             }
-                            this->data->addDetails(this->details);
+                            else{
+                            this->details=e_2.text();
+                            //                            qDebug()<<" "<<e_2.tagName()<<e_2.text();
+                            QDomNamedNodeMap map= e_2.attributes();// 获取元素的属性
+                                for(int i=0;i<map.length();i++){
+                                    this->details+=map.item(i).nodeValue();
+                                    //                                break; // only run once
+                                }
+                                this->data->addDetails(this->details);
+                            }
                             e_2=e_2.nextSiblingElement();
                         }while(!e_2.isNull());
-//                        qDebug()<<"\n";
+                        //                        qDebug()<<"\n";
 
                         e_1=e_1.nextSiblingElement();
                     }while(!e_1.isNull());
@@ -115,8 +121,8 @@ int XMLGetter::createEvent(QDomElement *element)
                 this->event->event_data=this->event_data;
                 this->event->render_data=this->render_data;
 
-                this->event->setRecordID(this->event->
-                                         system_data->getDetailByNameString("Provider"));
+                //                this->event->setRecordID(this->event->
+                //                                         system_data->getDetailByNameString("Provider"));
                 this->event->setTime(this->event->
                                      system_data->getDetailByNameString("TimeCreated"));
 
