@@ -15,10 +15,11 @@ MainWindow::MainWindow(QWidget *parent) :
     my->graph=getter->graph;
     my->createGraphByTime();
     this->graph=my->graph;
+    this->graph_from=my->graph;
     this->graph_time=my->graph_time;
-        showGraphData(my->graph);
-//    this->graph=my->graph_time;
-//    showGraphDataTime(this->graph_time);
+//    showGraphData(my->graph);
+    //    this->graph=my->graph_time;
+    showGraphData(this->graph);
 
 }
 
@@ -26,6 +27,9 @@ int MainWindow::showGraphData(MyGraph *graph)
 {
     if(graph==NULL)
         return 1;
+    this->graph=graph;
+
+    this->graph_from=this->graph;
     ui->tableWidget->clear();
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
@@ -55,6 +59,9 @@ int MainWindow::showGraphDataTime(MyGraph *graph_time)
 {
     if(graph_time==NULL)
         return 1;
+    this->graph=graph_time;
+
+    this->graph_time=this->graph;
     ui->tableWidget->clear();
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
@@ -153,19 +160,51 @@ void MainWindow::on_delBtn_clicked()
         return;
     }
 
-        QMessageBox::StandardButton resultBtn=QMessageBox::question(this,"Delete","Are you sure to delete this ?");
-        if(resultBtn==QMessageBox::Yes){
-            QString head_str=this->ui->tableWidget->horizontalHeaderItem(0)->text();
-            if(head_str=="Provider"){
-                this->graph->vexList->removeAt(position);
-                qDebug()<<"aaa";
-            }else if(head_str=="Time"){
-                this->graph->vexList->at(position);
+    QMessageBox::StandardButton resultBtn=QMessageBox::question(this,"Delete","Are you sure to delete this ?");
+    if(resultBtn==QMessageBox::Yes){
+        QString head_str=this->ui->tableWidget->horizontalHeaderItem(0)->text();
+        if(head_str=="Provider"){
+            this->vex_temp=this->graph->vexList->at(position);
+            this->vex_temp->eventList->clear();
+
+            this->graph->vexList->removeAt(position);
+
+            MyClass *my=new MyClass();
+            my->graph=this->graph;
+            my->createGraphByTime();
+
+            this->graph_time=my->graph_time;
+            this->showGraphData(this->graph);
+        }else if(head_str=="Time"){
+            this->vex_temp=this->graph->vexList->at(position);
+            this->events_list=this->vex_temp->eventList;
+            int length=this->events_list->length();
+            for(int i=0;i<length;i++){
+                this->vex_temp=this->graph_from->getVex(this->events_list->at(i)->record_id);
+                int length_from_event=this->vex_temp->eventList->length();
+
+                for(int x=0;x<length_from_event;x++){
+                    if(this->vex_temp->eventList->at(x)==this->events_list->at(i)){
+
+                        this->vex_temp->eventList->removeAt(x);
+                        break;
+                    }
+                }
+
             }
+            this->vex_temp=this->graph->vexList->at(position);
+            this->graph->vexList->removeAt(position);
+            this->graph->deleteVex(this->vex_temp);
+            this->showGraphDataTime(this->graph);
 
-        }else if(resultBtn==QMessageBox::No){
-
+        }else if(head_str=="EventRecordID"){
+            this->vex->eventList->removeAt(position);
+            this->showVexData(this->vex);
         }
+
+    }else if(resultBtn==QMessageBox::No){
+
+    }
 
 }
 
@@ -199,7 +238,7 @@ void MainWindow::on_actionsave_triggered()
     if(path.length()==0){
         QMessageBox::information(this,"NULL","You didn't choose anything!");
     }else {
-        QFile file(path);
+//        QFile file(path);
         //        if(!file.open(QIODevice::ReadWrite)){
 
         //        }
@@ -208,5 +247,95 @@ void MainWindow::on_actionsave_triggered()
 
         QMessageBox::information(this,"Save","Data has saved in "+path);
     }
+}
 
+void MainWindow::on_actionfuture_triggered()
+{
+    int position=0;
+    QString head_text=ui->tableWidget->horizontalHeaderItem(0)->text();
+/*    if(head_text=="Provider"||head_text=="Time"){
+        position=ui->tableWidget->currentRow();
+        if(position==-1)
+            position=0;
+
+        last_src=head_text;
+        showVexData(this->graph->vexList->at(position));
+    }else */
+    if(head_text=="EventRecordID"){
+        position=ui->tableWidget->currentRow();
+        if(position==-1)
+            QMessageBox::information(this,"Infomation","you haven't choose anything!");
+        else{
+//        showEventData(this->vex->eventList->at(position));
+            this->event_temp=this->vex->eventList->at(position);
+//            QMap<MyVex *,int> *vexMap=this->graph_time->getVexTime(this->vex->time,5);
+
+            /**
+            * QMap<QString,int> *eventMap=this->graph_time->getSimilarEvent(this->event_temp->changeTime());
+            * QList<QString> keys=eventMap->keys();
+            * QList<MyEvent*> *eventList=this->graph_time->getProviderEvent()
+            **/
+        }
+    }
+
+
+//    QList<int> values=vexMap->values();
+
+
+//    for(int i=0;i<values.length();i++){
+//        qDebug()<<values.at(i);
+//    }
+
+//    values=eventMap->values();
+//    for(int i=0;i<values.length();i++){
+//        qDebug()<<values.at(i);
+//    }
+}
+
+void MainWindow::on_actionbefore_triggered()
+{
+
+}
+
+void MainWindow::on_action_triggered()
+{
+
+}
+
+void MainWindow::on_actionopen_triggered()
+{
+    QString path=QFileDialog::getOpenFileName(this,"Open",".","*.xml");
+    if(path.length()==0){
+        QMessageBox::information(this,"NULL","You didn't choose anything!");
+    }else {
+//        QFile file(path);
+        //        if(!file.open(QIODevice::ReadWrite)){
+
+        //        }
+        XMLGetter get;
+        get.getXML(path);
+
+        MyClass my;
+
+        my.graph=get.graph;
+        my.createGraphByTime();
+
+        this->graph=my.graph;
+        this->graph_from=my.graph;
+        this->graph_time=my.graph_time;
+
+        showGraphData(this->graph);
+
+//        QMessageBox::information(this,"Save","Data has saved in "+path);
+    }
+}
+
+void MainWindow::on_action_show_graph_triggered()
+{
+    showGraphData(this->graph_from);
+}
+
+void MainWindow::on_action_show_time_triggered()
+{
+    showGraphDataTime(this->graph_time);
 }

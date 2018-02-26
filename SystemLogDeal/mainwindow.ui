@@ -138,29 +138,40 @@
      </font>
     </property>
     <property name="title">
-     <string>SEARCH</string>
+     <string>搜索</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuHelp">
+   <widget class="QMenu" name="menuAdvance">
     <property name="font">
      <font>
       <family>Cambria</family>
      </font>
     </property>
     <property name="title">
-     <string>HELP</string>
+     <string>高级</string>
     </property>
+    <addaction name="actionfuture"/>
+    <addaction name="actionbefore"/>
+    <addaction name="action"/>
    </widget>
    <widget class="QMenu" name="menuFILE">
     <property name="title">
-     <string>FILE</string>
+     <string>文件</string>
     </property>
     <addaction name="actionsave"/>
     <addaction name="actionopen"/>
    </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>显示</string>
+    </property>
+    <addaction name="action_show_graph"/>
+    <addaction name="action_show_time"/>
+   </widget>
    <addaction name="menuFILE"/>
+   <addaction name="menu"/>
    <addaction name="menuSearch"/>
-   <addaction name="menuHelp"/>
+   <addaction name="menuAdvance"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -193,6 +204,32 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionfuture">
+   <property name="text">
+    <string>预测</string>
+   </property>
+  </action>
+  <action name="actionbefore">
+   <property name="text">
+    <string>追溯</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>推理</string>
+   </property>
+  </action>
+  <action name="action_show_graph">
+   <property name="text">
+    <string>以来源为准(default)
+</string>
+   </property>
+  </action>
+  <action name="action_show_time">
+   <property name="text">
+    <string>以时间为准</string>
    </property>
   </action>
  </widget>

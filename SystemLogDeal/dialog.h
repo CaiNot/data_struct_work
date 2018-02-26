@@ -16,6 +16,9 @@ class Dialog : public QDialog
 
 public:
     explicit Dialog(QWidget *parent = 0);
+    /*
+    ** 显示event的所有信息在textBrowser上
+    */
     showData(MyEvent *event);
     ~Dialog();
 

@@ -5,7 +5,6 @@ MyGraph::MyGraph()
 {
     this->vexList=new QList<MyVex *>();
     this->object=NULL;
-
 }
 
 MyVex *MyGraph::getVex(QString target)
@@ -34,6 +33,117 @@ MyVex *MyGraph::getVexTime(QString time)
     return NULL;
 }
 
+QMap<MyVex *,int> *MyGraph::getVexTime(QString time, int arrange)
+{
+    QMap<MyVex *,int> *vex_map=new QMap<MyVex*,int>;
+    QList<MyVex *> *vex_list=new QList<MyVex*>,*vex_list_1=new QList<MyVex *>;
+    MyVex *vex=getVexTime(time);
+
+    if(vex==NULL)
+        return NULL;
+
+    MyEdge *edge_temp=NULL;
+
+    MyVex *vex_temp=vex;
+
+    vex_list->append(vex_temp);
+
+    for(int i=0;i<arrange;i++){
+        int length_vex_list=vex_list->length();
+        for(int l=0;l<length_vex_list;l++){
+
+            vex=vex_list->at(l);
+
+            edge_temp=vex->firstEdge;
+
+            while(edge_temp!=NULL){
+                //        vex_list.append((MyVex*)edge_temp->vex);
+//                if(vex==edge_temp->vex)
+//                    continue;
+                if(vex_map->contains((MyVex*)edge_temp->vex)){
+                    vex_map->insert((MyVex*)edge_temp->vex,vex_map->value((MyVex*)edge_temp->vex)+1);
+                }else{
+                    vex_map->insert((MyVex*)edge_temp->vex,1);
+                    vex_list_1->append((MyVex*)edge_temp->vex);
+                }
+
+                edge_temp=edge_temp->adjlink;
+            }
+
+        }
+        vex_list->clear();
+        vex_list=vex_list_1;
+    }
+    return vex_map;
+}
+
+QList<MyEvent *> *MyGraph::getProviderEvent(MyVex *vex,int day)
+{
+    if(vex==NULL){
+        return NULL;
+    }
+    if(vex->eventList->length()<15)
+        return vex->eventList;
+    else
+    {
+        QList<MyEvent*> *event_list=new QList<MyEvent*>;
+        MyEvent *event=NULL;
+        int length=vex->eventList->length(),timeCompare=0;
+        for(int i=0;i<length;i++){
+            event=vex->eventList->at(i);
+            timeCompare=compareTimeStr(vex->time,event->changeTime());
+            if(timeCompare<10000*day){
+                event_list->append(event);
+            }
+            if(event->render_data->getDetailByNameString("Level")!="信息"){
+                event_list->append(event);
+            }
+        }
+        return event_list;
+    }
+
+    return NULL;
+}
+
+QMap<QString ,int> *MyGraph::getSimilarEvent(MyVex *vex)
+{
+    if(vex==NULL)
+        return NULL;
+    int length=vex->eventList->length();
+    MyEvent *event=NULL,*event_temp=NULL;
+
+    QMap<MyVex *,int> *vexMap=NULL;
+    QMap<QString,int> *eventMap_provider=new QMap<QString,int>();
+
+//    QList<MyEvent*> event_list=new QList<MyEvent*>;
+    QList<MyVex *> vex_list;
+
+    MyVex *vex_temp=NULL;
+    for(int i=0;i<length;i++){
+        event=vex->eventList->at(i);
+        vexMap=getVexTime(event->changeTime(),2);
+        vex_list=vexMap->keys();
+        int vex_list_length=vex_list.length();
+
+        for(int l=0;l<vex_list_length;l++){
+            vex_temp=vex_list.at(l);
+            int event_list_length=vex_temp->eventList->length();
+
+            for(int x=0;x<event_list_length;x++){
+                event_temp=vex_temp->eventList->at(x);
+
+                if(eventMap_provider->contains(event_temp->record_id)){
+                    eventMap_provider->insert(event_temp->record_id,eventMap_provider->value(event_temp->record_id)+1);
+                }else{
+                    eventMap_provider->insert(event_temp->record_id,1);
+                }
+
+            }
+        }
+    }
+    return eventMap_provider;
+}
+
 int MyGraph::deleteVex(MyVex *vex)
 {
     int length=this->vexList->length();
@@ -47,10 +157,26 @@ int MyGraph::deleteVex(MyVex *vex)
 
 int MyGraph::compareTime(MyVex *vex_1, MyVex *vex_2)
 {
-    int vex_1_time=vex_1->time.toInt();
-    int vex_2_time=vex_2->time.toInt();
+    QString time_1=vex_1->time.right(9);
+    QString time_2=vex_2->time.right(9);
+    int vex_time_1=time_1.toInt();
+    int vex_time_2=time_2.toInt();
 
-    return vex_1_time-vex_2_time;
+
+    //    int num=vex_1->time-vex_2->time;
+    return vex_time_1-vex_time_2;
+}
+
+int MyGraph::compareTimeStr(QString time_1, QString time_2)
+{
+    time_1=time_1.right(9);
+    time_2=time_2.right(9);
+    int vex_time_1=time_1.toInt();
+    int vex_time_2=time_2.toInt();
+
+
+    //    int num=vex_1->time-vex_2->time;
+    return vex_time_1-vex_time_2;
 }
 
 MyGraph::addVex(MyVex *vex)
@@ -119,6 +245,9 @@ MyVex::addEvent(MyEvent *data)
 int MyVex::deleteEdge(MyVex *vex)
 {
     MyEdge *edge_temp=this->firstEdge,*edge=this->firstEdge;
+    if(edge==NULL){
+        return 0;
+    }
     if(vex==edge->vex){
         this->firstEdge=edge->adjlink;
         free(edge);
@@ -148,10 +277,10 @@ QString MyVex::getLevels()
     MyEvent *e=NULL;
     for(int i =0;i<length_events;i++){
         e=this->eventList->at(i);
-//        if(i==0){
-//            levels=e->render_data->getDetailByNameString("Level");
-//        }else
-//            levels+=","+e->render_data->getDetailByNameString("Level");
+        //        if(i==0){
+        //            levels=e->render_data->getDetailByNameString("Level");
+        //        }else
+        //            levels+=","+e->render_data->getDetailByNameString("Level");
 
         levels=e->render_data->getDetailByNameString("Level");
         if(levels_map.contains(levels)){

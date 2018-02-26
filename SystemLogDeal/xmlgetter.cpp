@@ -148,7 +148,7 @@ int XMLGetter::createEvent(QDomElement *element)
 
 int XMLGetter::writeXML(QString PATH,MyGraph *graph)
 {
-    PATH="d://what.xml";
+//    PATH="d://what.xml";
     QFile file(PATH);
 
     file.open(QIODevice::ReadWrite);

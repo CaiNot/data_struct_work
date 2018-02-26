@@ -81,7 +81,7 @@ MyEvent::setTime(QString time)
     this->time=time;
 }
 
-MyEvent::changeTime()
+QString MyEvent::changeTime()
 {
     QString temp;
     this->time=this->time.left(16);
@@ -93,6 +93,7 @@ MyEvent::changeTime()
     }
     this->time=temp;
 
+    return temp;
 }
 
 MyEvent::setRecordID(QString id)

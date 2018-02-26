@@ -8,7 +8,11 @@
 class MyClass{
 public:
     MyClass();
-//    MyGraph *createGraphByFrom(QString PATH);
+
+    /*
+    ** 创建时间关系图
+    ** 前提：this->graph含有创建时间关系图所需要的信息
+    */
     MyGraph *createGraphByTime();
 
 
